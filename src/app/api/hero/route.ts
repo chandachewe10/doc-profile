@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdminApi, jsonError, jsonOk } from "@/lib/api-helpers";
+import { requireAdminApi, jsonOk } from "@/lib/api-helpers";
 import { logActivity } from "@/lib/activity";
 
 export async function GET() {

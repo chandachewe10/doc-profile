@@ -45,7 +45,21 @@ export function CrudEditor<T extends { id: string } & Record<string, unknown>>({
   };
 
   useEffect(() => {
-    fetchItems();
+    let active = true;
+
+    void (async () => {
+      setLoading(true);
+      const res = await fetch(`/api/cms/${resource}`);
+      const data = await res.json();
+      if (active) {
+        setItems(data);
+        setLoading(false);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
   }, [resource]);
 
   const openNew = () => {
