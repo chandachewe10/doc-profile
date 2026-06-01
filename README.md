@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dr. Mwenya Mubanga — Portfolio with CMS
 
-## Getting Started
+A premium personal brand portfolio website with a built-in content management system. Non-technical users can update all site content through a secure admin dashboard — no code required.
 
-First, run the development server:
+## Features
+
+### Public Website
+- Hero section with photo, stats, and CV download
+- About Me with rich text and research pillars
+- Services showcase
+- Portfolio / projects grid
+- Experience timeline and skills
+- Publications with category filters
+- Testimonials
+- Contact section with social links
+- Blog / news updates (optional)
+- Fully responsive, premium earth-tone design
+- SEO metadata from CMS
+
+### Admin CMS (`/admin`)
+- Secure login (NextAuth credentials)
+- Mobile-responsive dashboard
+- Rich text editor (TipTap) for content
+- Media library for image/PDF uploads
+- Activity logs for all changes
+- Profile and password settings
+- Manage: homepage, about, services, projects, experience, skills, testimonials, publications, contact, social links, resume, blog, site settings
+
+## Quick Start
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment
+
+Copy `.env.example` to `.env` and update values:
+
+```bash
+cp .env.example .env
+```
+
+Key variables:
+- `AUTH_SECRET` — random string for session encryption
+- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — initial admin login (used during seed)
+- `DATABASE_URL` — SQLite path for development
+
+### 3. Set up database
+
+```bash
+npm run db:setup
+```
+
+This creates the SQLite database and seeds it with Dr. Mwenya Mubanga's portfolio content from the original site.
+
+### 4. Run development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Website:** http://localhost:3000
+- **Admin CMS:** http://localhost:3000/admin
+- **Default login:** `admin@mwenya.com` / `Admin123!` (change after first login)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Production Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Vercel (recommended)
 
-## Learn More
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for step-by-step commands, environment variables, and PostgreSQL setup (required — SQLite does not work on Vercel).
 
-To learn more about Next.js, take a look at the following resources:
+Quick summary:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm install -g vercel
+vercel login
+vercel link
+# Add env vars (DATABASE_URL, AUTH_SECRET, NEXTAUTH_URL, etc.)
+vercel --prod
+npm run db:seed   # once, against production DATABASE_URL
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Build on Vercel runs: `prisma generate` → `prisma migrate deploy` → `next build`
 
-## Deploy on Vercel
+### File uploads
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Uploaded files are stored in `public/uploads/`. For production:
+- Ensure the directory is writable
+- Consider cloud storage (S3, Cloudinary) for multi-instance deployments
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Security checklist
+
+- [ ] Change default admin password immediately
+- [ ] Set a strong `AUTH_SECRET` (32+ random characters)
+- [ ] Use HTTPS in production
+- [ ] Do not commit `.env` to version control
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx              # Public portfolio (dynamic from DB)
+│   ├── blog/                 # Blog listing and posts
+│   ├── admin/                # CMS dashboard pages
+│   └── api/                  # REST API for CMS operations
+├── components/
+│   ├── portfolio/            # Public site sections
+│   └── admin/                # CMS UI components
+├── lib/
+│   ├── auth.ts               # NextAuth configuration
+│   ├── content.ts            # Site content fetcher
+│   └── prisma.ts             # Database client
+prisma/
+├── schema.prisma             # Database schema
+└── seed.ts                   # Initial content seeder
+public/uploads/               # Uploaded media files
+reference/original-portfolio.html  # Original static site
+```
+
+## CMS Guide (for site owners)
+
+1. Go to `/admin` and sign in
+2. Use the sidebar to navigate sections
+3. Edit content and click **Save Changes**
+4. Changes appear on the live site immediately
+5. Upload images via **Media Library** or inline pickers
+6. Upload your CV in **Resume / CV**
+7. Check **Activity Log** to see change history
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm start` | Start production server |
+| `npm run db:setup` | Create DB + seed content |
+| `npm run db:seed` | Re-run content seeder |
+
+## Tech Stack
+
+- **Next.js 16** (App Router)
+- **Prisma 5** + SQLite (PostgreSQL-ready)
+- **NextAuth v5** (credentials auth)
+- **TipTap** (rich text editor)
+- **Tailwind CSS 4**
+- **TypeScript**

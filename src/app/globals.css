@@ -1,26 +1,229 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #1a1410;
+  --beige: #e6ddd0;
+  --beige-deep: #ddd4c6;
+  --copper: #d98c5f;
+  --copper-light: #e5a67a;
+  --plum: #5d3a71;
+
+  /* Semantic tokens */
+  --page-bg: var(--beige);
+  --surface: var(--beige);
+  --navy: var(--ink);
+  --charcoal: var(--ink);
+  --earth: var(--copper);
+  --gold: var(--copper);
+  --terracotta: var(--copper-light);
+  --gold-muted: rgba(217, 140, 95, 0.16);
+  --warm-light: #f0e9df;
+  --cream: var(--beige);
+  --sand: #d4c9b8;
+  --border: rgba(26, 20, 16, 0.14);
+  --border-light: rgba(26, 20, 16, 0.22);
+  --text-muted: #5c4f45;
+  --text-subtle: #73665c;
+  --card-shadow: 0 8px 28px rgba(26, 20, 16, 0.07);
+
+  --white: var(--beige);
+  --gray-light: var(--beige);
+  --muted: var(--text-muted);
+
+  --font-serif: "Source Serif 4", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Source Sans 3", "DM Sans", system-ui, sans-serif;
+  --font-mono: "DM Mono", "Courier New", monospace;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-page: var(--page-bg);
+  --color-surface: var(--surface);
+  --color-beige: var(--beige);
+  --color-beige-deep: var(--beige-deep);
+  --color-ink: var(--ink);
+  --color-navy: var(--navy);
+  --color-charcoal: var(--charcoal);
+  --color-earth: var(--earth);
+  --color-copper: var(--copper);
+  --color-copper-light: var(--copper-light);
+  --color-gold: var(--gold);
+  --color-gold-muted: var(--gold-muted);
+  --color-terracotta: var(--terracotta);
+  --color-cream: var(--cream);
+  --color-warm-light: var(--warm-light);
+  --color-sand: var(--sand);
+  --color-plum: var(--plum);
+  --color-border: var(--border);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.site-container {
+  @apply mx-auto w-full max-w-[1140px] px-6 md:px-10 lg:px-12;
+}
+
+.section-padding {
+  @apply py-20 md:py-24;
+}
+
+.section-panel {
+  background: var(--beige);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  box-shadow: var(--card-shadow);
+}
+
+.section-panel-padding {
+  @apply p-8 md:p-10 lg:p-12;
+}
+
+.section-label {
+  @apply mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-copper;
+}
+
+.section-title {
+  @apply text-[clamp(1.65rem,2.8vw,2.25rem)] font-serif font-normal leading-[1.2] tracking-[-0.01em] text-ink;
+}
+
+.section-lead {
+  @apply mt-4 max-w-2xl text-[16px] leading-relaxed text-text-muted;
+}
+
+.btn-navy {
+  @apply inline-flex items-center justify-center gap-2 bg-copper px-6 py-3 text-[13px] font-medium uppercase tracking-[0.08em] text-ink transition-colors duration-200;
+}
+
+.btn-navy:hover {
+  background: var(--copper-light);
+}
+
+.btn-outline-navy {
+  @apply inline-flex items-center justify-center gap-2 border border-ink/25 bg-beige px-6 py-3 text-[13px] font-medium text-ink transition-colors duration-200 hover:border-ink hover:bg-beige-deep;
+}
+
+.btn-outline-light {
+  @apply inline-flex items-center justify-center gap-2 border border-warm-light/35 px-6 py-3 text-[13px] font-medium uppercase tracking-[0.08em] text-warm-light/90 transition-colors duration-200 hover:border-warm-light/60 hover:bg-warm-light/10;
+}
+
+.btn-outline-ink {
+  @apply inline-flex items-center justify-center gap-2 border border-ink/25 px-5 py-2 text-[13px] font-medium text-ink transition-colors duration-200 hover:border-copper hover:text-copper;
+}
+
+.card-academic {
+  background: var(--beige-deep);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  box-shadow: var(--card-shadow);
+  @apply p-7 md:p-8;
+}
+
+.panel-list {
+  background: var(--beige-deep);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  box-shadow: var(--card-shadow);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.metric-value {
+  @apply font-serif text-3xl font-light tracking-[-0.02em] text-copper md:text-4xl;
+}
+
+.metric-label {
+  @apply mt-1 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-warm-light/50;
+}
+
+.metric-value-light {
+  @apply font-serif text-3xl font-light tracking-[-0.02em] text-copper md:text-4xl;
+}
+
+.metric-label-light {
+  @apply mt-1 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-text-muted;
+}
+
+/* Rich text */
+.ProseMirror {
+  outline: none;
+  min-height: 200px;
+  background: var(--beige);
+  color: var(--ink);
+}
+
+.ProseMirror p {
+  margin-bottom: 0.75rem;
+}
+
+.ProseMirror a {
+  color: var(--copper);
+  text-decoration: underline;
+}
+
+/* Admin — warm palette */
+.admin-input {
+  @apply w-full rounded-lg border border-border bg-beige px-3 py-2 text-sm text-ink outline-none transition focus:border-copper focus:ring-2 focus:ring-copper/15;
+}
+
+.admin-label {
+  @apply mb-1 block text-xs font-medium uppercase tracking-wider text-text-muted;
+}
+
+.admin-card {
+  @apply rounded-xl border border-border bg-beige p-6 shadow-sm;
+}
+
+.admin-btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-copper px-4 py-2 text-sm font-medium text-ink transition disabled:opacity-50;
+}
+
+.admin-btn-primary:hover {
+  background: var(--copper-light);
+}
+
+.admin-btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-beige-deep px-4 py-2 text-sm font-medium text-ink transition hover:bg-sand disabled:opacity-50;
+}
+
+.admin-btn-danger {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-warm-light transition hover:bg-red-800 disabled:opacity-50;
 }
