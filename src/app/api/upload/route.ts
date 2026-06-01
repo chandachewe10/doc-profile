@@ -41,6 +41,10 @@ export async function POST(request: NextRequest) {
     const ext = path.extname(file.name) || (file.type === "application/pdf" ? ".pdf" : ".jpg");
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
 
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return jsonError("BLOB_READ_WRITE_TOKEN is not configured. Set up Vercel Blob storage in the Vercel dashboard.", 500);
+    }
+
     const blob = await put(filename, buffer, {
       access: "public",
       contentType: file.type,
@@ -66,8 +70,9 @@ export async function POST(request: NextRequest) {
 
     return jsonOk(media, 201);
   } catch (err) {
-    console.error("Upload error:", err);
-    return jsonError("Upload failed", 500);
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Upload error:", message);
+    return jsonError(`Upload failed: ${message}`, 500);
   }
 }
 
