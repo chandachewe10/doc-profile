@@ -36,6 +36,7 @@ export function CrudEditor<T extends { id: string } & Record<string, unknown>>({
   const [items, setItems] = useState<T[]>([]);
   const [editing, setEditing] = useState<Partial<T> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchItems = async () => {
     const res = await fetch(`/api/cms/${resource}`);
@@ -78,6 +79,7 @@ export function CrudEditor<T extends { id: string } & Record<string, unknown>>({
 
   const saveItem = async () => {
     if (!editing) return;
+    setError(null);
     const payload = { ...editing } as Record<string, unknown>;
     for (const key of jsonFields) {
       if (Array.isArray(payload[key])) {
@@ -86,6 +88,8 @@ export function CrudEditor<T extends { id: string } & Record<string, unknown>>({
     }
 
     const isNew = !editing.id;
+    if (isNew) delete payload.id;
+
     const res = await fetch(`/api/cms/${resource}`, {
       method: isNew ? "POST" : "PUT",
       headers: { "Content-Type": "application/json" },
@@ -95,6 +99,9 @@ export function CrudEditor<T extends { id: string } & Record<string, unknown>>({
     if (res.ok) {
       setEditing(null);
       await fetchItems();
+    } else {
+      const data = await res.json().catch(() => null);
+      setError(data?.error || `Could not save. Please try again (${res.status}).`);
     }
   };
 
@@ -120,6 +127,18 @@ export function CrudEditor<T extends { id: string } & Record<string, unknown>>({
           </button>
         }
       />
+
+      {error && (
+        <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+          {error}
+        </p>
+      )}
+
+      {!loading && (
+        <p className="mb-4 text-sm text-gray-500">
+          {items.length} item{items.length === 1 ? "" : "s"} — use &quot;Add New&quot; to add more (no limit).
+        </p>
+      )}
 
       {editing && (
         <div className="admin-card mb-6 space-y-4">

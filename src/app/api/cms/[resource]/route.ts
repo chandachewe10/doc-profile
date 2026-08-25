@@ -58,6 +58,8 @@ export async function POST(
   if (!delegate || !config) return jsonError("Unknown resource", 404);
 
   const body = await request.json();
+  // Let the database generate ids — empty client ids break creates
+  if (!body.id) delete body.id;
 
   if (resource === "projects" && body.title && !body.slug) {
     body.slug = slugify(body.title);

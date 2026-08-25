@@ -7,7 +7,7 @@ export default function PublicationsAdminPage() {
     <CrudEditor
       resource="publications"
       title="Publications"
-      description="Manage research publications and papers"
+      description="Add as many research publications as you need — there is no limit. Use sort order to control display order on the site."
       fields={[
         { key: "year", label: "Year" },
         { key: "title", label: "Title", type: "textarea" },

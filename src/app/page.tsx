@@ -26,7 +26,7 @@ export default async function HomePage() {
 
       <main className="bg-page">
         {content.hero && (
-          <HeroSection hero={content.hero} resume={content.resume} orcidUrl={orcidUrl} />
+          <HeroSection hero={content.hero} orcidUrl={orcidUrl} />
         )}
 
         {content.about && <AboutSection about={content.about} />}
@@ -51,7 +51,6 @@ export default async function HomePage() {
           <ContactSection
             contact={content.contact}
             socialLinks={content.socialLinks}
-            resume={content.resume}
           />
         )}
       </main>

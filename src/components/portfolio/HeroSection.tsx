@@ -1,16 +1,14 @@
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
-import { ResumeDownloadLink } from "@/components/portfolio/ResumeDownloadLink";
 import { parseJson } from "@/lib/utils";
 import type { SiteContent } from "@/lib/content";
 
 type HeroProps = {
   hero: NonNullable<SiteContent["hero"]>;
-  resume: SiteContent["resume"];
   orcidUrl?: string;
 };
 
-export function HeroSection({ hero, resume, orcidUrl }: HeroProps) {
+export function HeroSection({ hero, orcidUrl }: HeroProps) {
   const degrees = parseJson<string[]>(hero.degrees, []);
   const roles = parseJson<{ label: string; url: string; org: string }[]>(hero.roles, []);
   const stats = parseJson<{ num: string; label: string }[]>(hero.stats, []);
@@ -27,7 +25,7 @@ export function HeroSection({ hero, resume, orcidUrl }: HeroProps) {
 
   return (
     <section className="grid min-h-[calc(100dvh-68px)] grid-cols-1 pt-[68px] lg:grid-cols-[3fr_2fr] lg:pt-[72px]">
-      <div className="relative flex flex-col justify-end bg-ink px-8 py-12 md:px-12 md:py-16 lg:px-14">
+      <div className="relative order-2 flex flex-col justify-end bg-ink px-8 py-12 md:px-12 md:py-16 lg:order-1 lg:px-14">
         <div
           className="pointer-events-none absolute inset-y-[15%] left-0 w-[3px] bg-gradient-to-b from-transparent via-copper to-transparent"
           aria-hidden
@@ -111,14 +109,35 @@ export function HeroSection({ hero, resume, orcidUrl }: HeroProps) {
               {ctaSecondary.text}
               <ExternalLink className="h-3.5 w-3.5" />
             </a>
-            {resume && <ResumeDownloadLink resume={resume} variant="hero" />}
           </div>
         </div>
       </div>
 
-      <div className="relative min-h-[360px] bg-beige lg:min-h-0">
+      <div className="relative order-1 bg-beige lg:order-2 lg:min-h-0">
         {hero.photoUrl ? (
-          <Image src={hero.photoUrl} alt={fullName} fill className="object-cover object-top" priority />
+          <>
+            {/* Phone: full uncropped portrait */}
+            <Image
+              src={hero.photoUrl}
+              alt={fullName}
+              width={1200}
+              height={1500}
+              className="h-auto w-full object-contain lg:hidden"
+              priority
+              sizes="100vw"
+            />
+            {/* Desktop: fill side panel */}
+            <div className="relative hidden h-full min-h-full lg:block">
+              <Image
+                src={hero.photoUrl}
+                alt={fullName}
+                fill
+                className="object-cover object-top"
+                priority
+                sizes="40vw"
+              />
+            </div>
+          </>
         ) : (
           <div className="flex h-full min-h-[360px] items-end justify-start p-10 lg:min-h-full lg:p-14">
             <div

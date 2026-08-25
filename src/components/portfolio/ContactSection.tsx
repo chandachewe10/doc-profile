@@ -1,16 +1,13 @@
 import Link from "next/link";
 import { ExternalLink, Mail, MapPin } from "lucide-react";
-import { ResumeDownloadLink } from "@/components/portfolio/ResumeDownloadLink";
 import type { SiteContent } from "@/lib/content";
 
 export function ContactSection({
   contact,
   socialLinks,
-  resume,
 }: {
   contact: NonNullable<SiteContent["contact"]>;
   socialLinks: SiteContent["socialLinks"];
-  resume: SiteContent["resume"];
 }) {
   const contactLinks = socialLinks.filter((l) => l.showInContact);
   const title = [contact.title, contact.titleEmphasis].filter(Boolean).join(" ");
@@ -64,12 +61,6 @@ export function ContactSection({
               <ExternalLink className="h-4 w-4 text-text-subtle" />
             </a>
           ))}
-
-          {resume && (
-            <div className="pt-4 text-center">
-              <ResumeDownloadLink resume={resume} variant="primary" showIcon={false} />
-            </div>
-          )}
         </div>
       </div>
     </section>

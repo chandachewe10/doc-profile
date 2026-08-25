@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { put } from "@vercel/blob";
+import { promises as fs } from "fs";
 import path from "path";
 import { prisma } from "@/lib/prisma";
 import { requireAdminApi, jsonError, jsonOk } from "@/lib/api-helpers";
@@ -7,6 +8,22 @@ import { logActivity } from "@/lib/activity";
 
 const MAX_SIZE = parseInt(process.env.MAX_UPLOAD_SIZE || "5242880", 10);
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "application/pdf"];
+
+async function storeFile(filename: string, buffer: Buffer, contentType: string): Promise<string> {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const blob = await put(filename, buffer, {
+      access: "public",
+      contentType,
+    });
+    return blob.url;
+  }
+
+  // Local development: write to public/uploads (not durable on Vercel)
+  const uploadsDir = path.join(process.cwd(), "public", "uploads");
+  await fs.mkdir(uploadsDir, { recursive: true });
+  await fs.writeFile(path.join(uploadsDir, filename), buffer);
+  return `/uploads/${filename}`;
+}
 
 export async function POST(request: NextRequest) {
   const authResult = await requireAdminApi();
@@ -40,20 +57,12 @@ export async function POST(request: NextRequest) {
 
     const ext = path.extname(file.name) || (file.type === "application/pdf" ? ".pdf" : ".jpg");
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
-
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      return jsonError("BLOB_READ_WRITE_TOKEN is not configured. Set up Vercel Blob storage in the Vercel dashboard.", 500);
-    }
-
-    const blob = await put(filename, buffer, {
-      access: "public",
-      contentType: file.type,
-    });
+    const url = await storeFile(filename, buffer, file.type);
 
     const media = await prisma.mediaFile.create({
       data: {
         filename: file.name,
-        url: blob.url,
+        url,
         mimeType: file.type,
         size: file.size,
         alt,
